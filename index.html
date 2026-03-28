@@ -3,54 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LOUREX | منصة التجارة الدولية</title>
+    <title>LOUREX GLOBAL | التجارة الذكية</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Cairo', sans-serif; }
-        .hero-gradient { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); }
+        body { font-family: 'Cairo', sans-serif; transition: all 0.5s ease; }
+        .product-card:hover { transform: translateY(-10px); transition: 0.3s; }
+        .glass { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); }
     </style>
 </head>
-<body class="bg-slate-50">
-    <nav class="bg-white/90 backdrop-blur-md sticky top-0 z-50 border-b border-slate-200 p-4 shadow-sm">
-        <div class="max-w-6xl mx-auto flex justify-between items-center">
-            <div class="text-3xl font-black text-blue-700 tracking-tighter italic">LOUREX</div>
-            <button class="bg-blue-700 text-white px-5 py-2 rounded-2xl font-bold text-sm shadow-lg shadow-blue-200">تواصل معنا</button>
+<body class="bg-[#0f172a] text-white">
+    <nav class="glass sticky top-0 z-50 p-4 border-b border-white/10 flex justify-between items-center">
+        <div class="text-2xl font-black text-blue-500 italic uppercase">LOUREX</div>
+        <div class="flex gap-2">
+            <select class="bg-slate-800 text-xs p-2 rounded-lg border-none" id="langSwitcher">
+                <option value="ar">العربية 🇸🇦</option>
+                <option value="tr">Türkçe 🇹🇷</option>
+                <option value="en">English 🇺🇸</option>
+                <option value="zh">中文 🇨🇳</option>
+            </select>
         </div>
     </nav>
 
-    <header class="py-16 px-6 text-center bg-white border-b border-slate-100">
-        <div class="max-w-4xl mx-auto">
-            <span class="bg-blue-50 text-blue-700 px-4 py-1.5 rounded-full text-xs font-black mb-6 inline-block uppercase tracking-wider">نخبة الصناعة التركية</span>
-            <h1 class="text-4xl md:text-6xl font-black text-slate-900 mb-6 leading-tight">بوابتك الذكية للتجارة بين <span class="text-blue-700">تركيا</span> و <span class="text-blue-700">المملكة</span></h1>
-            <p class="text-lg text-slate-500 mb-10 font-medium">نؤمن لك وصولاً مباشراً لأكبر مصانع الحلويات والمواد الغذائية التركية مع حلول لوجستية متكاملة.</p>
-            <div class="flex flex-wrap justify-center gap-4">
-                <div class="bg-slate-100 px-6 py-3 rounded-2xl font-bold text-slate-700 flex items-center gap-2">📦 شحن لوجستي</div>
-                <div class="bg-slate-100 px-6 py-3 rounded-2xl font-bold text-slate-700 flex items-center gap-2">🏭 توريد مصانع</div>
-            </div>
+    <section class="py-20 px-6 text-center relative overflow-hidden">
+        <div class="relative z-10">
+            <h1 class="text-5xl font-black mb-6 bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent" id="heroText">بوابتك العالمية للتجارة</h1>
+            <p class="text-slate-400 max-w-md mx-auto mb-10">من اسطنبول وقوانزو.. إلى قلب الرياض. نظام LOUREX الذكي يدير تجارتك بـ 4 لغات.</p>
         </div>
-    </header>
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-blue-500/10 blur-[120px] rounded-full"></div>
+    </section>
 
-    <section class="py-16 px-6 max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="bg-white p-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-50 text-center">
-            <div class="text-4xl mb-4 text-blue-700">🍬</div>
-            <h3 class="font-black text-xl mb-2 italic">منتجات فاخرة</h3>
-            <p class="text-slate-400 text-sm italic leading-relaxed font-medium">تغطية شاملة لمنتجات Ulker و Bifa وكبرى المصانع التركية.</p>
-        </div>
-        <div class="hero-gradient p-8 rounded-[2.5rem] shadow-xl shadow-blue-200 text-white text-center">
-            <div class="text-4xl mb-4">🚀</div>
-            <h3 class="font-black text-xl mb-2 italic text-white">سرعة التنفيذ</h3>
-            <p class="opacity-80 text-sm italic leading-relaxed font-medium">نقل مباشر من المصنع إلى مستودعاتك في الرياض بأعلى كفاءة.</p>
-        </div>
-        <div class="bg-white p-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-50 text-center">
-            <div class="text-4xl mb-4 text-blue-700">🤝</div>
-            <h3 class="font-black text-xl mb-2 italic text-white">شراكة مستدامة</h3>
-            <p class="text-slate-400 text-sm italic leading-relaxed font-medium text-white">نحن لا نبيع بضاعة، نحن نبني سلاسل إمداد موثوقة لعملك.</p>
+    <section class="px-6 pb-20 grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+        <div class="product-card bg-slate-800/50 p-6 rounded-[2rem] border border-white/5 shadow-2xl">
+            <div class="w-full h-48 bg-slate-700 rounded-2xl mb-4 flex items-center justify-center text-4xl">🍪</div>
+            <h3 class="text-xl font-bold mb-2" id="p1Name">بسكويت أولكر فينجر</h3>
+            <div class="flex justify-between items-center">
+                <span class="text-blue-400 font-black text-2xl" id="p1Price">58.20 SAR</span>
+                <span class="bg-emerald-500/10 text-emerald-400 text-[10px] px-3 py-1 rounded-full uppercase font-bold tracking-widest">In Stock</span>
+            </div>
         </div>
     </section>
 
-    <footer class="py-12 text-center text-slate-400 text-xs font-bold tracking-widest uppercase">
-        © 2026 LOUREX TRADING GROUP | RIYADH - ISTANBUL
-    </footer>
+    <script>
+        const translations = {
+            ar: { hero: "بوابتك العالمية للتجارة", p1: "بسكويت أولكر فينجر", price: "58.20 SAR" },
+            tr: { hero: "Küresel Ticaret Kapınız", p1: "Ülker Finger Bisküvi", price: "305.50 TRY" },
+            en: { hero: "Your Global Trade Gateway", p1: "Ulker Finger Biscuits", price: "15.50 USD" },
+            zh: { hero: "您的全球贸易门户", p1: "奥利奥手指饼干", price: "112.30 CNY" }
+        };
+
+        document.getElementById('langSwitcher').addEventListener('change', (e) => {
+            const lang = e.target.value;
+            document.body.dir = lang === 'ar' ? 'rtl' : 'ltr';
+            document.getElementById('heroText').innerText = translations[lang].hero;
+            document.getElementById('p1Name').innerText = translations[lang].p1;
+            document.getElementById('p1Price').innerText = translations[lang].price;
+        });
+    </script>
 </body>
 </html>
