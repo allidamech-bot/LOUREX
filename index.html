@@ -1,174 +1,256 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>LOUREX Global</title>
-
-<script src="https://cdn.tailwindcss.com"></script>
-
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
-
-<style>
-body{
-    font-family:'Cairo',sans-serif;
-    background:#0f172a;
-    color:white;
-}
-
-/* Glass effect */
-.glass{
-    background:rgba(255,255,255,0.05);
-    backdrop-filter:blur(12px);
-    border:1px solid rgba(255,255,255,0.1);
-}
-
-/* Glow */
-.glow:hover{
-    box-shadow:0 0 25px rgba(59,130,246,0.6);
-    transform:translateY(-5px);
-}
-
-/* Animation */
-.fade{
-    animation:fadeIn 0.5s ease;
-}
-
-@keyframes fadeIn{
-    from{opacity:0;transform:translateY(20px)}
-    to{opacity:1;transform:translateY(0)}
-}
-</style>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOUREX GLOBAL | المتجر الإلكتروني المتكامل</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #f3f4f6; color: #1f2937; }
+        .promo-banner { background: linear-gradient(90deg, #1e3a8a 0%, #3b82f6 100%); }
+        .product-card { transition: all 0.3s cubic-bezier(.25,.8,.25,1); }
+        .product-card:hover { transform: translateY(-10px); shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
+        .cart-sidebar { transition: transform 0.4s ease; z-index: 2000; }
+        .page-section { display: none; }
+        .page-section.active { display: block; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
 </head>
-
 <body>
 
-<!-- HEADER -->
-<header class="flex justify-between items-center p-6 glass sticky top-0 z-50">
-    <h1 class="text-3xl font-black text-blue-400">LOUREX</h1>
-
-    <div class="flex gap-4 items-center">
-        <input id="search" onkeyup="render()" placeholder="بحث..." class="px-4 py-2 rounded-xl text-black">
-
-        <select id="lang" onchange="render()" class="text-black p-2 rounded">
-            <option value="ar">AR</option>
-            <option value="en">EN</option>
-            <option value="tr">TR</option>
-            <option value="zh">中文</option>
-        </select>
-
-        <button onclick="toggleCart()" class="relative text-2xl">
-            🛒
-            <span id="count" class="absolute -top-2 -right-2 bg-red-500 text-xs px-2 rounded-full">0</span>
-        </button>
+    <div class="promo-banner text-white text-center py-2 text-xs font-bold uppercase tracking-widest">
+        شحن مجاني للطلبات التجارية فوق 500 كجم ✈️ الرياض | إسطنبول | قوانزو
     </div>
-</header>
 
-<!-- HERO -->
-<section class="p-10 text-center">
-    <h2 class="text-5xl font-black mb-4 text-blue-400">سوق LOUREX العالمي</h2>
-    <p class="opacity-70">استيراد مباشر من المصانع العالمية بأسعار خرافية</p>
-</section>
+    <nav class="bg-white shadow-md sticky top-0 z-[1000]">
+        <div class="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
+            <div class="text-3xl font-black text-blue-700 italic cursor-pointer" onclick="showSection('home')">LOUREX</div>
 
-<!-- PRODUCTS -->
-<section class="p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" id="products"></section>
+            <div class="hidden md:flex flex-1 mx-10 relative">
+                <input type="text" id="mainSearch" onkeyup="searchProducts()" placeholder="ابحث عن منتج، علامة تجارية أو رقم شحنة..." class="w-full bg-gray-100 border-none rounded-full py-3 px-6 outline-none focus:ring-2 ring-blue-500">
+                <button class="absolute left-4 top-3 text-gray-400">🔍</button>
+            </div>
 
-<!-- CART -->
-<div id="cart" class="fixed top-0 left-0 w-[350px] h-full glass p-6 overflow-auto translate-x-[-100%] transition">
-    <h2 class="text-2xl font-bold mb-4">Cart</h2>
-    <div id="cartItems"></div>
-    <h3 id="total" class="mt-4 font-bold"></h3>
-    <button onclick="checkout()" class="bg-blue-600 w-full p-3 rounded-xl mt-4">طلب عبر واتساب</button>
-</div>
+            <div class="flex items-center gap-6">
+                <select id="langSwitch" onchange="changeLang()" class="bg-transparent text-sm font-bold border-none outline-none cursor-pointer">
+                    <option value="ar">العربية 🇸🇦</option>
+                    <option value="en">English 🇺🇸</option>
+                    <option value="tr">Türkçe 🇹🇷</option>
+                </select>
+                <div class="relative cursor-pointer" onclick="toggleCart()">
+                    <span class="text-2xl">🛒</span>
+                    <span id="cartBadge" class="absolute -top-2 -right-2 bg-red-600 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold">0</span>
+                </div>
+            </div>
+        </div>
+    </nav>
 
-<script>
+    <main>
+        
+        <section id="section-home" class="page-section active">
+            <div class="relative h-[400px] bg-slate-900 overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=1600&q=80" class="w-full h-full object-cover opacity-50">
+                <div class="absolute inset-0 flex flex-col justify-center items-center text-center text-white px-4">
+                    <h1 class="text-5xl md:text-7xl font-black mb-6 italic">LOUREX MARKET</h1>
+                    <p class="text-xl mb-8 max-w-2xl">أكبر منصة لتوريد المنتجات الغذائية والحلويات من تركيا والصين إلى قلب الرياض.</p>
+                    <button onclick="showSection('shop')" class="bg-blue-600 hover:bg-blue-700 px-12 py-4 rounded-full font-black text-lg transition shadow-lg">ابدأ التجارة الآن</button>
+                </div>
+            </div>
 
-// بيانات
-let products=[
-{
-id:1,
-name:{ar:"بسكويت شوكولاتة",en:"Chocolate Biscuits",tr:"Çikolatalı Bisküvi",zh:"巧克力饼干"},
-price:12,
-img:"https://images.unsplash.com/photo-1589302168068-964664d93dc0"
-},
-{
-id:2,
-name:{ar:"جيلي ملون",en:"Jelly Candy",tr:"Jel Şeker",zh:"果冻糖"},
-price:9,
-img:"https://images.unsplash.com/photo-1590080877777-4d5f1c1d3f7b"
-}
-];
+            <div class="max-w-7xl mx-auto py-16 px-4">
+                <h2 class="text-3xl font-black mb-10 text-center">تسوق حسب التصنيف</h2>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <div onclick="filterProducts('حلويات')" class="bg-white p-8 rounded-3xl shadow-sm text-center cursor-pointer hover:bg-blue-50 transition">
+                        <div class="text-4xl mb-4">🍬</div>
+                        <h3 class="font-bold">حلويات</h3>
+                    </div>
+                    <div onclick="filterProducts('بسكويت')" class="bg-white p-8 rounded-3xl shadow-sm text-center cursor-pointer hover:bg-blue-50 transition">
+                        <div class="text-4xl mb-4">🍪</div>
+                        <h3 class="font-bold">بسكويت</h3>
+                    </div>
+                    <div onclick="filterProducts('مواد غذائية')" class="bg-white p-8 rounded-3xl shadow-sm text-center cursor-pointer hover:bg-blue-50 transition">
+                        <div class="text-4xl mb-4">🥫</div>
+                        <h3 class="font-bold">مواد غذائية</h3>
+                    </div>
+                    <div onclick="showSection('track')" class="bg-blue-600 p-8 rounded-3xl shadow-sm text-center cursor-pointer text-white">
+                        <div class="text-4xl mb-4">📦</div>
+                        <h3 class="font-bold">تتبع الشحنة</h3>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-let cart=[];
+        <section id="section-shop" class="page-section py-16 px-4 max-w-7xl mx-auto">
+            <h2 class="text-4xl font-black mb-12 border-r-8 border-blue-600 pr-6 uppercase italic">Products Catalog</h2>
+            <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                </div>
+        </section>
 
-// عرض المنتجات
-function render(){
-let lang=document.getElementById("lang").value;
-let search=document.getElementById("search").value.toLowerCase();
+        <section id="section-track" class="page-section py-32 px-4 max-w-2xl mx-auto text-center">
+            <div class="bg-white p-12 rounded-[3rem] shadow-xl border border-blue-100">
+                <h2 class="text-4xl font-black mb-6 italic text-blue-900 uppercase">Track Your Cargo</h2>
+                <p class="text-gray-500 mb-10">أدخل رقم الشحنة لمتابعة حالتها اللحظية.</p>
+                <input type="text" placeholder="LX-XXXX" class="w-full border-2 border-gray-100 p-6 rounded-2xl mb-6 text-center text-3xl font-mono text-blue-600 focus:border-blue-500 outline-none">
+                <button onclick="alert('جاري الاتصال بالنظام اللوجستي...')" class="w-full bg-blue-700 text-white p-6 rounded-2xl font-black text-xl hover:bg-blue-800 transition">استعلام</button>
+            </div>
+        </section>
+    </main>
 
-let html="";
+    <footer class="bg-slate-900 text-slate-400 py-20 px-4 mt-20 border-t border-white/5">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
+            <div>
+                <div class="text-4xl font-black text-blue-500 italic mb-6">LOUREX</div>
+                <p class="text-sm leading-relaxed">الرائد في التجارة الدولية والخدمات اللوجستية. نربط الرياض بالعالم عبر حلول تقنية متطورة.</p>
+            </div>
+            <div>
+                <h4 class="text-white font-black mb-6 uppercase text-sm tracking-widest italic">مكاتبنا</h4>
+                <ul class="space-y-3 text-xs">
+                    <li>📍 الرياض، حي الملك فهد</li>
+                    <li>📍 إسطنبول، مجمع ميرتر</li>
+                    <li>📍 قوانزو، منطقة التداول</li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-black mb-6 uppercase text-sm tracking-widest italic">روابط سريعة</h4>
+                <ul class="space-y-3 text-xs">
+                    <li onclick="showSection('shop')" class="hover:text-white cursor-pointer transition">كتالوج الجملة</li>
+                    <li onclick="showSection('track')" class="hover:text-white cursor-pointer transition">نظام التتبع</li>
+                    <li class="hover:text-white cursor-pointer transition">سياسة الشحن</li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-black mb-6 uppercase text-sm tracking-widest italic">الدعم الفني</h4>
+                <div class="bg-blue-600/10 p-4 rounded-2xl border border-blue-500/20 text-center">
+                    <p class="text-blue-400 font-bold mb-2">WhatsApp Business</p>
+                    <p class="text-white font-black">+966 500 000 000</p>
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-20 pt-10 border-t border-white/5 text-[10px] font-bold uppercase tracking-[0.3em]">
+            © 2026 LOUREX GLOBAL. ALL RIGHTS RESERVED.
+        </div>
+    </footer>
 
-products.forEach(p=>{
-if(p.name[lang].toLowerCase().includes(search)){
-html+=`
-<div class="glass p-4 rounded-2xl glow fade">
-<img src="${p.img}" class="h-40 w-full object-cover rounded-xl mb-3">
-<h3 class="font-bold">${p.name[lang]}</h3>
-<p class="text-blue-400 font-bold">${p.price}$</p>
-<button onclick="add(${p.id})" class="bg-blue-600 w-full mt-3 p-2 rounded-xl">إضافة للسلة</button>
-</div>`;
-}
-});
+    <div id="sideCart" class="fixed left-0 top-0 h-full w-[400px] bg-white shadow-2xl cart-sidebar translate-x-[-100%] p-8">
+        <div class="flex justify-between items-center mb-10">
+            <h2 class="text-3xl font-black italic text-blue-800 uppercase">Cart</h2>
+            <button onclick="toggleCart()" class="text-4xl text-gray-300 hover:text-red-500">&times;</button>
+        </div>
+        <div id="cartItems" class="space-y-6 overflow-y-auto max-h-[60vh]">
+            <p class="text-center py-20 text-gray-400 italic font-bold">سلة المشتريات فارغة</p>
+        </div>
+        <div class="absolute bottom-10 left-8 right-8 border-t pt-8">
+            <div class="flex justify-between text-2xl font-black mb-8">
+                <span>Total:</span>
+                <span id="cartTotal">0.00 $</span>
+            </div>
+            <button onclick="checkout()" class="w-full bg-blue-700 text-white p-6 rounded-2xl font-black text-lg hover:bg-blue-800 transition shadow-xl">تأكيد طلب الجملة (WhatsApp)</button>
+        </div>
+    </div>
 
-document.getElementById("products").innerHTML=html;
-}
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // ضع مفاتيحك هنا ليعمل المتجر فوراً
+        const SUPABASE_URL = 'ضع_هنا_URL'; 
+        const SUPABASE_KEY = 'ضع_هنا_KEY';
+        const _client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// سلة
-function add(id){
-cart.push(products.find(p=>p.id==id));
-updateCart();
-}
+        let allProducts = [];
+        let cart = [];
 
-function updateCart(){
-let html="";
-let total=0;
+        async function init() {
+            const { data, error } = await _client.from('products').select('*');
+            if (error) return;
+            allProducts = data;
+            renderProducts(allProducts);
+        }
 
-cart.forEach((p,i)=>{
-total+=p.price;
-html+=`
-<div class="flex justify-between mb-2">
-<span>${p.name.en}</span>
-<button onclick="removeItem(${i})">❌</button>
-</div>`;
-});
+        function renderProducts(products) {
+            const container = document.getElementById('productsGrid');
+            container.innerHTML = products.length ? '' : '<p class="col-span-full text-center py-20 text-gray-400">لا يوجد منتجات تطابق بحثك</p>';
 
-document.getElementById("cartItems").innerHTML=html;
-document.getElementById("total").innerText="Total: "+total+"$";
-document.getElementById("count").innerText=cart.length;
-}
+            products.forEach(p => {
+                container.innerHTML += `
+                    <div class="product-card bg-white p-6 rounded-[2.5rem] border border-gray-100 shadow-sm flex flex-col h-full">
+                        <div class="h-52 bg-gray-50 rounded-3xl mb-6 overflow-hidden relative">
+                            ${p.image_url ? `<img src="${p.image_url}" class="w-full h-full object-cover">` : '<div class="w-full h-full flex items-center justify-center text-5xl opacity-20">📦</div>'}
+                            <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-4 py-1 rounded-full text-[10px] font-black uppercase text-blue-700">${p.origin_country || 'Imported'}</div>
+                        </div>
+                        <h3 class="text-lg font-bold mb-2 flex-grow">${p.name_ar || p.name_en}</h3>
+                        <p class="text-gray-400 text-[10px] uppercase font-bold tracking-widest mb-4 italic">Brand: ${p.brand || 'LOUREX'}</p>
+                        <div class="flex justify-between items-center border-t border-gray-50 pt-6">
+                            <span class="text-2xl font-black text-blue-900">${p.price_usd} <span class="text-[10px] text-gray-400 uppercase">USD</span></span>
+                            <button onclick="addToCart('${p.id}')" class="bg-blue-700 text-white w-12 h-12 rounded-2xl flex items-center justify-center hover:bg-blue-800 transition shadow-lg shadow-blue-200 font-bold text-xl">+</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
 
-function removeItem(i){
-cart.splice(i,1);
-updateCart();
-}
+        // نظام التنقل
+        function showSection(sectionId) {
+            document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+            document.getElementById('section-' + sectionId).classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
 
-function toggleCart(){
-let c=document.getElementById("cart");
-c.style.transform = (c.style.transform=="translateX(0px)")?"translateX(-100%)":"translateX(0)";
-}
+        function toggleCart() {
+            const cartDiv = document.getElementById('sideCart');
+            const isOpen = cartDiv.style.transform === 'translateX(0px)';
+            cartDiv.style.transform = isOpen ? 'translateX(-100%)' : 'translateX(0px)';
+        }
 
-// واتساب
-function checkout(){
-let msg="طلب جديد:%0A";
-cart.forEach(p=> msg+=p.name.en+" - "+p.price+"$%0A");
-window.open("https://wa.me/966XXXXXXXXX?text="+msg);
-}
+        function addToCart(id) {
+            const product = allProducts.find(p => p.id === id);
+            cart.push(product);
+            document.getElementById('cartBadge').innerText = cart.length;
+            updateCartUI();
+            toggleCart(); // فتح السلة عند إضافة منتج
+        }
 
-render();
+        function updateCartUI() {
+            const container = document.getElementById('cartItems');
+            container.innerHTML = cart.length ? '' : '<p class="text-center py-20 text-gray-400 italic">السلة فارغة</p>';
+            let total = 0;
+            cart.forEach((item, index) => {
+                total += parseFloat(item.price_usd);
+                container.innerHTML += `
+                    <div class="flex items-center gap-4 bg-gray-50 p-4 rounded-3xl border border-gray-100">
+                        <div class="w-16 h-16 bg-white rounded-xl flex-shrink-0 flex items-center justify-center text-2xl">📦</div>
+                        <div class="flex-1">
+                            <h4 class="text-xs font-bold">${item.name_ar || item.name_en}</h4>
+                            <p class="text-blue-700 font-black text-sm">${item.price_usd} $</p>
+                        </div>
+                        <button onclick="removeFromCart(${index})" class="text-red-400 text-xl font-bold">&times;</button>
+                    </div>
+                `;
+            });
+            document.getElementById('cartTotal').innerText = total.toFixed(2) + ' $';
+        }
 
-</script>
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            document.getElementById('cartBadge').innerText = cart.length;
+            updateCartUI();
+        }
 
+        function searchProducts() {
+            const term = document.getElementById('mainSearch').value.toLowerCase();
+            const filtered = allProducts.filter(p => 
+                (p.name_ar && p.name_ar.toLowerCase().includes(term)) || 
+                (p.name_en && p.name_en.toLowerCase().includes(term))
+            );
+            renderProducts(filtered);
+            if(term.length > 0) showSection('shop');
+        }
+
+        function checkout() {
+            const message = encodeURIComponent("طلب جديد من متجر لويركس:\n" + cart.map(i => i.name_en).join('\n'));
+            window.open(`https://wa.me/966500000000?text=${message}`);
+        }
+
+        window.onload = init;
+    </script>
 </body>
 </html>
