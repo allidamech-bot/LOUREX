@@ -44,21 +44,59 @@
         </div>
     </section>
 
-    <script>
-        const translations = {
-            ar: { hero: "بوابتك العالمية للتجارة", p1: "بسكويت أولكر فينجر", price: "58.20 SAR" },
-            tr: { hero: "Küresel Ticaret Kapınız", p1: "Ülker Finger Bisküvi", price: "305.50 TRY" },
-            en: { hero: "Your Global Trade Gateway", p1: "Ulker Finger Biscuits", price: "15.50 USD" },
-            zh: { hero: "您的全球贸易门户", p1: "奥利奥手指饼干", price: "112.30 CNY" }
-        };
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+    // 1. إعدادات الربط (ضع مفاتيحك هنا)
+    const SUPABASE_URL = 'ضع_هنا_Project_URL';
+    const SUPABASE_KEY = 'ضع_هنا_API_Key_anon_public';
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        document.getElementById('langSwitcher').addEventListener('change', (e) => {
-            const lang = e.target.value;
-            document.body.dir = lang === 'ar' ? 'rtl' : 'ltr';
-            document.getElementById('heroText').innerText = translations[lang].hero;
-            document.getElementById('p1Name').innerText = translations[lang].p1;
-            document.getElementById('p1Price').innerText = translations[lang].price;
+    // 2. محرك جلب البيانات العالمي
+    async function fetchLourexProducts() {
+        const { data: products, error } = await supabase
+            .from('products')
+            .select('*');
+
+        if (error) {
+            console.error('Error loading products:', error);
+            return;
+        }
+
+        renderProducts(products);
+    }
+
+    // 3. عرض المنتجات باللغة والعملة المختارة
+    function renderProducts(products) {
+        const lang = document.getElementById('langSwitcher').value;
+        const container = document.getElementById('productsContainer');
+        container.innerHTML = ''; // تنظيف الحاوية
+
+        products.forEach(product => {
+            // منطق تحويل العملة البسيط (يمكن تطويره لربط أسعار الصرف الحية لاحقاً)
+            const rates = { ar: 3.75, tr: 32.2, en: 1, zh: 7.23 }; // مقابل الدولار
+            const symbols = { ar: 'SAR', tr: 'TRY', en: 'USD', zh: 'CNY' };
+            const localPrice = (product.price_usd * rates[lang]).toFixed(2);
+
+            container.innerHTML += `
+                <div class="product-card bg-slate-800/50 p-6 rounded-[2rem] border border-white/5 shadow-2xl transition-all">
+                    <div class="w-full h-40 bg-slate-700 rounded-2xl mb-4 overflow-hidden flex items-center justify-center">
+                        <img src="${product.image_url || 'https://via.placeholder.com/150'}" class="object-cover">
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">${product['name_' + lang]}</h3>
+                    <p class="text-slate-400 text-xs mb-4">Origin: ${product.origin_country || 'Turkey'}</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-blue-400 font-black text-xl">${localPrice} ${symbols[lang]}</span>
+                        <span class="text-[10px] text-slate-500 italic">MOQ: ${product.moq}</span>
+                    </div>
+                </div>
+            `;
         });
-    </script>
+    }
+
+    // تشغيل النظام عند فتح الموقع
+    document.getElementById('langSwitcher').addEventListener('change', fetchLourexProducts);
+    window.onload = fetchLourexProducts;
+</script>
+
 </body>
 </html>
