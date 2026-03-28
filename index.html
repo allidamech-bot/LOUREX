@@ -3,21 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LOUREX GLOBAL | التجارة الذكية</title>
+    <title>LOUREX GLOBAL | منصة التجارة الدولية</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Cairo', sans-serif; transition: all 0.5s ease; }
-        .product-card:hover { transform: translateY(-10px); transition: 0.3s; }
-        .glass { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px); }
+        body { font-family: 'Cairo', sans-serif; background-color: #020617; }
+        .glass-card { 
+            background: rgba(30, 41, 59, 0.5); 
+            backdrop-filter: blur(12px); 
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .glass-card:hover { transform: scale(1.02); border-color: #3b82f6; }
+        .gradient-text { background: linear-gradient(90deg, #60a5fa, #34d399); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     </style>
 </head>
-<body class="bg-[#0f172a] text-white">
+<body class="text-slate-200">
 
-    <nav class="glass sticky top-0 z-50 p-4 border-b border-white/10 flex justify-between items-center">
-        <div class="text-2xl font-black text-blue-500 italic uppercase">LOUREX</div>
-        <div class="flex gap-2">
-            <select class="bg-slate-800 text-xs p-2 rounded-lg border-none text-white" id="langSwitcher">
+    <nav class="sticky top-0 z-50 bg-[#020617]/80 backdrop-blur-md border-b border-slate-800 p-4">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <div class="text-2xl font-black tracking-tighter text-blue-500 italic">LOUREX</div>
+            <select id="langSwitcher" class="bg-slate-900 border border-slate-700 text-sm rounded-xl px-3 py-2 outline-none focus:ring-2 ring-blue-500">
                 <option value="ar">العربية 🇸🇦</option>
                 <option value="tr">Türkçe 🇹🇷</option>
                 <option value="en">English 🇺🇸</option>
@@ -26,77 +32,76 @@
         </div>
     </nav>
 
-    <section class="py-20 px-6 text-center relative overflow-hidden">
-        <div class="relative z-10">
-            <h1 class="text-5xl font-black mb-6 bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent" id="heroText">بوابتك العالمية للتجارة</h1>
-            <p class="text-slate-400 max-w-md mx-auto mb-10">من اسطنبول وقوانزو.. إلى قلب الرياض. نظام LOUREX الذكي يدير تجارتك بـ 4 لغات.</p>
-        </div>
-        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-blue-500/10 blur-[120px] rounded-full"></div>
-    </section>
+    <header class="py-16 px-6 text-center">
+        <h1 id="heroTitle" class="text-4xl md:text-6xl font-black mb-4 gradient-text">بوابتك العالمية للتجارة</h1>
+        <p id="heroSub" class="text-slate-400 text-sm md:text-base max-w-lg mx-auto">من إسطنبول وقوانزو إلى الرياض.. نظام ذكي لإدارة تجارتك بـ 4 لغات.</p>
+    </header>
 
-    <section id="productsContainer" class="px-6 pb-20 grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-        <div class="text-center col-span-full opacity-50">جاري تحميل المنتجات العالمية...</div>
-    </section>
+    <main class="max-w-6xl mx-auto px-6 pb-24">
+        <div id="productsContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="col-span-full text-center py-20 opacity-50">جاري مزامنة البيانات العالمية...</div>
+        </div>
+    </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // 1. إعدادات الربط (استبدل القيم بالقيم الخاصة بك)
-        const SUPABASE_URL = 'ضع_هنا_رابط_المشروع_URL';
-        const SUPABASE_KEY = 'ضع_هنا_مفتاح_API_KEY';
+        const SUPABASE_URL = 'ضع_هنا_URL'; 
+        const SUPABASE_KEY = 'ضع_هنا_KEY';
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // 2. محرك جلب البيانات
-        async function fetchLourexProducts() {
-            const { data: products, error } = await _supabase
-                .from('products')
-                .select('*');
+        const content = {
+            ar: { title: "بوابتك العالمية للتجارة", sub: "من إسطنبول وقوانزو إلى الرياض.. نظام ذكي لإدارة تجارتك بـ 4 لغات.", moq: "أدنى كمية:", origin: "المنشأ:" },
+            tr: { title: "Küresel Ticaret Kapınız", sub: "İstanbul ve Guangzhou'dan Riyad'a.. Ticaretinizi 4 dilde yöneten akıllı sistem.", moq: "Minimum Sipariş:", origin: "Menşei:" },
+            en: { title: "Global Trade Gateway", sub: "From Istanbul & Guangzhou to Riyadh.. Smart system to manage your trade in 4 languages.", moq: "MOQ:", origin: "Origin:" },
+            zh: { title: "全球贸易门户", sub: "从伊斯坦布尔和广州到利雅得.. 以4种语言管理您的贸易的智能系统。", moq: "起订量:", origin: "产地:" }
+        };
 
-            if (error) {
-                console.error('Error:', error);
-                return;
-            }
-            renderProducts(products);
-        }
-
-        // 3. عرض المنتجات
-        function renderProducts(products) {
+        async function loadSystem() {
             const lang = document.getElementById('langSwitcher').value;
-            const container = document.getElementById('productsContainer');
             
-            // تحديث النصوص الثابتة حسب اللغة
-            const heroDict = {
-                ar: "بوابتك العالمية للتجارة",
-                tr: "Küresel Ticaret Kapınız",
-                en: "Your Global Trade Gateway",
-                zh: "您的全球贸易门户"
-            };
-            document.getElementById('heroText').innerText = heroDict[lang];
-            document.body.dir = lang === 'ar' ? 'rtl' : 'ltr';
+            // تحديث النصوص الثابتة
+            document.getElementById('heroTitle').innerText = content[lang].title;
+            document.getElementById('heroSub').innerText = content[lang].sub;
+            document.documentElement.lang = lang;
+            document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
 
-            container.innerHTML = ''; 
+            const { data: products, error } = await _supabase.from('products').select('*');
+            if (error) return console.error(error);
 
-            products.forEach(product => {
+            const container = document.getElementById('productsContainer');
+            container.innerHTML = '';
+
+            products.forEach(p => {
                 const rates = { ar: 3.75, tr: 32.2, en: 1, zh: 7.23 };
-                const symbols = { ar: 'SAR', tr: 'TRY', en: 'USD', zh: 'CNY' };
-                const localPrice = (product.price_usd * rates[lang]).toFixed(2);
+                const symbols = { ar: 'ر.س', tr: 'TL', en: '$', zh: '¥' };
+                const price = (p.price_usd * rates[lang]).toFixed(2);
+                
+                // اختيار الاسم الصحيح بناءً على اللغة، وإذا كان فارغاً نستخدم الإنجليزي كافتراضي
+                const displayName = p['name_' + lang] || p.name_en || 'Product';
 
                 container.innerHTML += `
-                    <div class="product-card bg-slate-800/50 p-6 rounded-[2rem] border border-white/5 shadow-2xl transition-all">
-                        <div class="w-full h-40 bg-slate-700 rounded-2xl mb-4 overflow-hidden flex items-center justify-center text-4xl">
-                            ${product.image_url ? `<img src="${product.image_url}" class="w-full h-full object-cover">` : '📦'}
+                    <div class="glass-card rounded-[2.5rem] p-6 flex flex-col h-full">
+                        <div class="w-full h-48 bg-slate-800 rounded-3xl mb-6 overflow-hidden">
+                            ${p.image_url ? `<img src="${p.image_url}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center text-5xl">📦</div>`}
                         </div>
-                        <h3 class="text-xl font-bold mb-2">${product['name_' + lang] || product.name_en}</h3>
-                        <div class="flex justify-between items-center">
-                            <span class="text-blue-400 font-black text-xl">${localPrice} ${symbols[lang]}</span>
-                            <span class="text-[10px] text-slate-500 uppercase">MOQ: ${product.moq || 1}</span>
+                        <h3 class="text-xl font-bold mb-2">${displayName}</h3>
+                        <p class="text-slate-500 text-xs mb-4">${content[lang].origin} ${p.origin_country || 'Turkey'}</p>
+                        <div class="mt-auto flex justify-between items-end">
+                            <div>
+                                <p class="text-[10px] text-slate-500 uppercase font-bold">${content[lang].moq}</p>
+                                <p class="text-lg font-black text-blue-400">${price} <span class="text-xs">${symbols[lang]}</span></p>
+                            </div>
+                            <button class="bg-blue-600 hover:bg-blue-500 p-3 rounded-2xl transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
+                            </button>
                         </div>
                     </div>
                 `;
             });
         }
 
-        document.getElementById('langSwitcher').addEventListener('change', fetchLourexProducts);
-        window.onload = fetchLourexProducts;
+        document.getElementById('langSwitcher').addEventListener('change', loadSystem);
+        window.onload = loadSystem;
     </script>
 </body>
 </html>
