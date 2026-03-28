@@ -3,68 +3,108 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LOUREX Global Marketplace</title>
+
+<title>LOUREX Global</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
 
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+
 <style>
-body { font-family: sans-serif; background:#f1f5f9; }
-.product-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:20px;}
+body{
+    font-family:'Cairo',sans-serif;
+    background:#0f172a;
+    color:white;
+}
+
+/* Glass effect */
+.glass{
+    background:rgba(255,255,255,0.05);
+    backdrop-filter:blur(12px);
+    border:1px solid rgba(255,255,255,0.1);
+}
+
+/* Glow */
+.glow:hover{
+    box-shadow:0 0 25px rgba(59,130,246,0.6);
+    transform:translateY(-5px);
+}
+
+/* Animation */
+.fade{
+    animation:fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn{
+    from{opacity:0;transform:translateY(20px)}
+    to{opacity:1;transform:translateY(0)}
+}
 </style>
+
 </head>
 
 <body>
 
-<header class="bg-black text-white p-4 flex justify-between items-center">
-<h1 class="text-2xl font-bold">LOUREX</h1>
+<!-- HEADER -->
+<header class="flex justify-between items-center p-6 glass sticky top-0 z-50">
+    <h1 class="text-3xl font-black text-blue-400">LOUREX</h1>
 
-<div class="flex gap-3">
-<select id="lang" onchange="renderProducts()" class="text-black p-1">
-<option value="ar">AR</option>
-<option value="en">EN</option>
-<option value="tr">TR</option>
-<option value="zh">中文</option>
-</select>
+    <div class="flex gap-4 items-center">
+        <input id="search" onkeyup="render()" placeholder="بحث..." class="px-4 py-2 rounded-xl text-black">
 
-<button onclick="toggleCart()">🛒 <span id="cartCount">0</span></button>
-</div>
+        <select id="lang" onchange="render()" class="text-black p-2 rounded">
+            <option value="ar">AR</option>
+            <option value="en">EN</option>
+            <option value="tr">TR</option>
+            <option value="zh">中文</option>
+        </select>
+
+        <button onclick="toggleCart()" class="relative text-2xl">
+            🛒
+            <span id="count" class="absolute -top-2 -right-2 bg-red-500 text-xs px-2 rounded-full">0</span>
+        </button>
+    </div>
 </header>
 
-<div class="p-4">
-<input id="search" onkeyup="renderProducts()" placeholder="بحث..." class="w-full p-3 mb-4 rounded border">
-<div id="products" class="product-grid"></div>
-</div>
+<!-- HERO -->
+<section class="p-10 text-center">
+    <h2 class="text-5xl font-black mb-4 text-blue-400">سوق LOUREX العالمي</h2>
+    <p class="opacity-70">استيراد مباشر من المصانع العالمية بأسعار خرافية</p>
+</section>
+
+<!-- PRODUCTS -->
+<section class="p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" id="products"></section>
 
 <!-- CART -->
-<div id="cart" style="display:none; position:fixed; top:0; right:0; width:300px; height:100%; background:white; padding:20px; overflow:auto;">
-<h2>Cart</h2>
-<div id="cartItems"></div>
-<h3 id="total"></h3>
-<button onclick="checkout()" style="background:green;color:white;padding:10px;width:100%">طلب عبر واتساب</button>
+<div id="cart" class="fixed top-0 left-0 w-[350px] h-full glass p-6 overflow-auto translate-x-[-100%] transition">
+    <h2 class="text-2xl font-bold mb-4">Cart</h2>
+    <div id="cartItems"></div>
+    <h3 id="total" class="mt-4 font-bold"></h3>
+    <button onclick="checkout()" class="bg-blue-600 w-full p-3 rounded-xl mt-4">طلب عبر واتساب</button>
 </div>
 
 <script>
 
-// PRODUCTS DATABASE (محلي)
-let products = [
+// بيانات
+let products=[
 {
 id:1,
 name:{ar:"بسكويت شوكولاتة",en:"Chocolate Biscuits",tr:"Çikolatalı Bisküvi",zh:"巧克力饼干"},
-price:10,
-category:"food"
+price:12,
+img:"https://images.unsplash.com/photo-1589302168068-964664d93dc0"
 },
 {
 id:2,
-name:{ar:"حلوى جيلي",en:"Jelly Candy",tr:"Jel Şeker",zh:"果冻糖"},
-price:8,
-category:"food"
+name:{ar:"جيلي ملون",en:"Jelly Candy",tr:"Jel Şeker",zh:"果冻糖"},
+price:9,
+img:"https://images.unsplash.com/photo-1590080877777-4d5f1c1d3f7b"
 }
 ];
 
 let cart=[];
 
 // عرض المنتجات
-function renderProducts(){
+function render(){
 let lang=document.getElementById("lang").value;
 let search=document.getElementById("search").value.toLowerCase();
 
@@ -73,10 +113,11 @@ let html="";
 products.forEach(p=>{
 if(p.name[lang].toLowerCase().includes(search)){
 html+=`
-<div style="background:white;padding:10px;border-radius:10px;">
-<h3>${p.name[lang]}</h3>
-<p>${p.price} $</p>
-<button onclick="addToCart(${p.id})">🛒</button>
+<div class="glass p-4 rounded-2xl glow fade">
+<img src="${p.img}" class="h-40 w-full object-cover rounded-xl mb-3">
+<h3 class="font-bold">${p.name[lang]}</h3>
+<p class="text-blue-400 font-bold">${p.price}$</p>
+<button onclick="add(${p.id})" class="bg-blue-600 w-full mt-3 p-2 rounded-xl">إضافة للسلة</button>
 </div>`;
 }
 });
@@ -85,9 +126,8 @@ document.getElementById("products").innerHTML=html;
 }
 
 // سلة
-function addToCart(id){
-let p=products.find(x=>x.id==id);
-cart.push(p);
+function add(id){
+cart.push(products.find(p=>p.id==id));
 updateCart();
 }
 
@@ -98,15 +138,15 @@ let total=0;
 cart.forEach((p,i)=>{
 total+=p.price;
 html+=`
-<div>
-${p.name.en} - ${p.price}
+<div class="flex justify-between mb-2">
+<span>${p.name.en}</span>
 <button onclick="removeItem(${i})">❌</button>
 </div>`;
 });
 
 document.getElementById("cartItems").innerHTML=html;
-document.getElementById("total").innerText="Total: "+total;
-document.getElementById("cartCount").innerText=cart.length;
+document.getElementById("total").innerText="Total: "+total+"$";
+document.getElementById("count").innerText=cart.length;
 }
 
 function removeItem(i){
@@ -116,22 +156,17 @@ updateCart();
 
 function toggleCart(){
 let c=document.getElementById("cart");
-c.style.display = (c.style.display=="none")?"block":"none";
+c.style.transform = (c.style.transform=="translateX(0px)")?"translateX(-100%)":"translateX(0)";
 }
 
-// طلب واتساب
+// واتساب
 function checkout(){
-let text="طلب جديد:%0A";
-
-cart.forEach(p=>{
-text+=p.name.en+" - "+p.price+"$%0A";
-});
-
-window.open("https://wa.me/966XXXXXXXXX?text="+text);
+let msg="طلب جديد:%0A";
+cart.forEach(p=> msg+=p.name.en+" - "+p.price+"$%0A");
+window.open("https://wa.me/966XXXXXXXXX?text="+msg);
 }
 
-// تشغيل
-renderProducts();
+render();
 
 </script>
 
