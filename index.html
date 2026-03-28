@@ -9,14 +9,15 @@
     <style>
         body { font-family: 'Cairo', sans-serif; transition: all 0.5s ease; }
         .product-card:hover { transform: translateY(-10px); transition: 0.3s; }
-        .glass { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); }
+        .glass { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px); }
     </style>
 </head>
 <body class="bg-[#0f172a] text-white">
+
     <nav class="glass sticky top-0 z-50 p-4 border-b border-white/10 flex justify-between items-center">
         <div class="text-2xl font-black text-blue-500 italic uppercase">LOUREX</div>
         <div class="flex gap-2">
-            <select class="bg-slate-800 text-xs p-2 rounded-lg border-none" id="langSwitcher">
+            <select class="bg-slate-800 text-xs p-2 rounded-lg border-none text-white" id="langSwitcher">
                 <option value="ar">العربية 🇸🇦</option>
                 <option value="tr">Türkçe 🇹🇷</option>
                 <option value="en">English 🇺🇸</option>
@@ -33,70 +34,69 @@
         <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-blue-500/10 blur-[120px] rounded-full"></div>
     </section>
 
-    <section class="px-6 pb-20 grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-        <div class="product-card bg-slate-800/50 p-6 rounded-[2rem] border border-white/5 shadow-2xl">
-            <div class="w-full h-48 bg-slate-700 rounded-2xl mb-4 flex items-center justify-center text-4xl">🍪</div>
-            <h3 class="text-xl font-bold mb-2" id="p1Name">بسكويت أولكر فينجر</h3>
-            <div class="flex justify-between items-center">
-                <span class="text-blue-400 font-black text-2xl" id="p1Price">58.20 SAR</span>
-                <span class="bg-emerald-500/10 text-emerald-400 text-[10px] px-3 py-1 rounded-full uppercase font-bold tracking-widest">In Stock</span>
-            </div>
-        </div>
+    <section id="productsContainer" class="px-6 pb-20 grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+        <div class="text-center col-span-full opacity-50">جاري تحميل المنتجات العالمية...</div>
     </section>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-    // 1. إعدادات الربط (ضع مفاتيحك هنا)
-    const SUPABASE_URL = 'ضع_هنا_Project_URL';
-    const SUPABASE_KEY = 'ضع_هنا_API_Key_anon_public';
-    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // 1. إعدادات الربط (استبدل القيم بالقيم الخاصة بك)
+        const SUPABASE_URL = 'ضع_هنا_رابط_المشروع_URL';
+        const SUPABASE_KEY = 'ضع_هنا_مفتاح_API_KEY';
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // 2. محرك جلب البيانات العالمي
-    async function fetchLourexProducts() {
-        const { data: products, error } = await supabase
-            .from('products')
-            .select('*');
+        // 2. محرك جلب البيانات
+        async function fetchLourexProducts() {
+            const { data: products, error } = await _supabase
+                .from('products')
+                .select('*');
 
-        if (error) {
-            console.error('Error loading products:', error);
-            return;
+            if (error) {
+                console.error('Error:', error);
+                return;
+            }
+            renderProducts(products);
         }
 
-        renderProducts(products);
-    }
+        // 3. عرض المنتجات
+        function renderProducts(products) {
+            const lang = document.getElementById('langSwitcher').value;
+            const container = document.getElementById('productsContainer');
+            
+            // تحديث النصوص الثابتة حسب اللغة
+            const heroDict = {
+                ar: "بوابتك العالمية للتجارة",
+                tr: "Küresel Ticaret Kapınız",
+                en: "Your Global Trade Gateway",
+                zh: "您的全球贸易门户"
+            };
+            document.getElementById('heroText').innerText = heroDict[lang];
+            document.body.dir = lang === 'ar' ? 'rtl' : 'ltr';
 
-    // 3. عرض المنتجات باللغة والعملة المختارة
-    function renderProducts(products) {
-        const lang = document.getElementById('langSwitcher').value;
-        const container = document.getElementById('productsContainer');
-        container.innerHTML = ''; // تنظيف الحاوية
+            container.innerHTML = ''; 
 
-        products.forEach(product => {
-            // منطق تحويل العملة البسيط (يمكن تطويره لربط أسعار الصرف الحية لاحقاً)
-            const rates = { ar: 3.75, tr: 32.2, en: 1, zh: 7.23 }; // مقابل الدولار
-            const symbols = { ar: 'SAR', tr: 'TRY', en: 'USD', zh: 'CNY' };
-            const localPrice = (product.price_usd * rates[lang]).toFixed(2);
+            products.forEach(product => {
+                const rates = { ar: 3.75, tr: 32.2, en: 1, zh: 7.23 };
+                const symbols = { ar: 'SAR', tr: 'TRY', en: 'USD', zh: 'CNY' };
+                const localPrice = (product.price_usd * rates[lang]).toFixed(2);
 
-            container.innerHTML += `
-                <div class="product-card bg-slate-800/50 p-6 rounded-[2rem] border border-white/5 shadow-2xl transition-all">
-                    <div class="w-full h-40 bg-slate-700 rounded-2xl mb-4 overflow-hidden flex items-center justify-center">
-                        <img src="${product.image_url || 'https://via.placeholder.com/150'}" class="object-cover">
+                container.innerHTML += `
+                    <div class="product-card bg-slate-800/50 p-6 rounded-[2rem] border border-white/5 shadow-2xl transition-all">
+                        <div class="w-full h-40 bg-slate-700 rounded-2xl mb-4 overflow-hidden flex items-center justify-center text-4xl">
+                            ${product.image_url ? `<img src="${product.image_url}" class="w-full h-full object-cover">` : '📦'}
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">${product['name_' + lang] || product.name_en}</h3>
+                        <div class="flex justify-between items-center">
+                            <span class="text-blue-400 font-black text-xl">${localPrice} ${symbols[lang]}</span>
+                            <span class="text-[10px] text-slate-500 uppercase">MOQ: ${product.moq || 1}</span>
+                        </div>
                     </div>
-                    <h3 class="text-xl font-bold mb-2">${product['name_' + lang]}</h3>
-                    <p class="text-slate-400 text-xs mb-4">Origin: ${product.origin_country || 'Turkey'}</p>
-                    <div class="flex justify-between items-center">
-                        <span class="text-blue-400 font-black text-xl">${localPrice} ${symbols[lang]}</span>
-                        <span class="text-[10px] text-slate-500 italic">MOQ: ${product.moq}</span>
-                    </div>
-                </div>
-            `;
-        });
-    }
+                `;
+            });
+        }
 
-    // تشغيل النظام عند فتح الموقع
-    document.getElementById('langSwitcher').addEventListener('change', fetchLourexProducts);
-    window.onload = fetchLourexProducts;
-</script>
-
+        document.getElementById('langSwitcher').addEventListener('change', fetchLourexProducts);
+        window.onload = fetchLourexProducts;
+    </script>
 </body>
 </html>
