@@ -1,71 +1,141 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LOUREX GLOBAL</title>
+    <title>LOUREX | المنصة التجارية العالمية</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
-    <style>body { font-family: 'Cairo', sans-serif; background-color: #020617; }</style>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #020617; color: #f8fafc; overflow-x: hidden; }
+        .page { display: none; min-height: 80vh; }
+        .page.active { display: block; animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .glass-nav { background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .nav-link { cursor: pointer; transition: 0.3s; padding: 0.5rem 1rem; border-radius: 0.75rem; }
+        .nav-link:hover { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+        .nav-link.active { color: #3b82f6; background: rgba(59, 130, 246, 0.15); font-weight: bold; }
+    </style>
 </head>
-<body class="text-white">
-    <nav class="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-900/50">
-        <div class="text-2xl font-bold text-blue-500">LOUREX</div>
-        <select id="langSwitcher" class="bg-slate-800 p-2 rounded text-sm text-white">
-            <option value="ar">العربية 🇸🇦</option>
-            <option value="tr">Türkçe 🇹🇷</option>
-            <option value="en">English 🇺🇸</option>
-            <option value="zh">中文 🇨🇳</option>
-        </select>
+<body>
+
+    <nav class="glass-nav sticky top-0 z-50 p-4">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <div class="text-2xl font-black text-blue-500 italic">LOUREX</div>
+            
+            <div class="hidden md:flex gap-4 text-sm">
+                <span onclick="showPage('home')" class="nav-link active" id="link-home">الرئيسية</span>
+                <span onclick="showPage('shop')" class="nav-link" id="link-shop">المتجر</span>
+                <span onclick="showPage('track')" class="nav-link" id="link-track">التتبع</span>
+                <span onclick="showPage('about')" class="nav-link" id="link-about">من نحن</span>
+            </div>
+
+            <select id="langSwitcher" class="bg-slate-900 border border-slate-700 text-[10px] md:text-xs p-2 rounded-xl outline-none">
+                <option value="ar">العربية 🇸🇦</option>
+                <option value="tr">Türkçe 🇹🇷</option>
+                <option value="en">English 🇺🇸</option>
+                <option value="zh">中文 🇨🇳</option>
+            </select>
+        </div>
     </nav>
 
-    <header class="py-10 text-center">
-        <h1 id="heroTitle" class="text-3xl font-bold">بوابتك العالمية للتجارة</h1>
-    </header>
-
-    <main class="max-w-4xl mx-auto px-4">
-        <div id="productsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <section id="page-home" class="page active px-6 py-20 text-center">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-5xl md:text-7xl font-black mb-6 bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">LOUREX GLOBAL</h1>
+            <p class="text-slate-400 text-lg mb-10">شريكك اللوجستي الموثوق لربط تجارة الجملة بين تركيا، الصين، والمملكة العربية السعودية.</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="p-6 bg-slate-900/50 rounded-3xl border border-white/5">
+                    <div class="text-3xl mb-4 text-blue-500 italic">350kg+</div>
+                    <p class="text-sm text-slate-500 uppercase tracking-widest font-bold">قدرات الشحن الجوي</p>
+                </div>
+                <div class="p-6 bg-slate-900/50 rounded-3xl border border-white/5">
+                    <div class="text-3xl mb-4 text-blue-500 italic">Riyadh</div>
+                    <p class="text-sm text-slate-500 uppercase tracking-widest font-bold">مركز التوزيع الرئيسي</p>
+                </div>
+                <div class="p-6 bg-slate-900/50 rounded-3xl border border-white/5">
+                    <div class="text-3xl mb-4 text-blue-500 italic">B2B</div>
+                    <p class="text-sm text-slate-500 uppercase tracking-widest font-bold">حلول الجملة الذكية</p>
+                </div>
             </div>
-    </main>
+        </div>
+    </section>
+
+    <section id="page-shop" class="page px-6 py-12">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl font-bold mb-8">كتالوج المنتجات</h2>
+            <div id="productsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                </div>
+        </div>
+    </section>
+
+    <section id="page-track" class="page px-6 py-20">
+        <div class="max-w-2xl mx-auto bg-slate-900/50 p-10 rounded-[3rem] border border-blue-500/20 text-center">
+            <h2 class="text-3xl font-bold mb-6 italic">TRACKING SYSTEM</h2>
+            <p class="text-slate-400 mb-8">أدخل رقم الحاوية أو بوليصة الشحن الجوي لمتابعة شحنتك.</p>
+            <input type="text" placeholder="LX-XXXX-XXXX" class="w-full bg-slate-950 border border-slate-800 p-5 rounded-2xl mb-4 outline-none focus:ring-2 ring-blue-500 text-center font-mono text-xl">
+            <button class="w-full bg-blue-600 p-5 rounded-2xl font-black uppercase hover:bg-blue-500">استعلام عن الحالة</button>
+        </div>
+    </section>
+
+    <section id="page-about" class="page px-6 py-20 text-right">
+        <div class="max-w-3xl mx-auto leading-relaxed">
+            <h2 class="text-4xl font-black mb-8 border-r-4 border-blue-500 pr-4">عن LOUREX</h2>
+            <p class="text-xl text-slate-300 mb-6 italic">نحن شركة سعودية طموحة، نجمع بين خبرة التجارة الدولية في إسطنبول وقوانزو وقوة السوق في الرياض.</p>
+            <p class="text-slate-400 mb-10">تأسست LOUREX لتسهيل عمليات الاستيراد والتصدير، مع التركيز على المنتجات الغذائية والحلويات التركية والصينية، وتقديم حلول تقنية تسمح للتجار بمتابعة أعمالهم بدقة عالية.</p>
+            <div class="grid grid-cols-2 gap-4 text-center">
+                <div class="p-6 bg-slate-900 rounded-2xl">📍 الرياض</div>
+                <div class="p-6 bg-slate-900 rounded-2xl">📍 إسطنبول</div>
+            </div>
+        </div>
+    </section>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // استبدل هذه بالقيم الحقيقية من Supabase
         const SUPABASE_URL = 'ضع_هنا_URL'; 
         const SUPABASE_KEY = 'ضع_هنا_KEY';
-        
-        // تأكد من وجود الرمز _ قبل supabase لتجنب تضارب الأسماء
         const _client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        async function loadProducts() {
-            const lang = document.getElementById('langSwitcher').value;
-            document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
-
-            const { data, error } = await _client.from('products').select('*');
+        // نظام التنقل بين الصفحات
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
             
-            if (error) {
-                console.error("خطأ:", error.message);
-                return;
-            }
+            document.getElementById('page-' + pageId).classList.add('active');
+            document.getElementById('link-' + pageId).classList.add('active');
+            window.scrollTo(0,0);
+        }
 
+        // جلب المنتجات من سوبابيس
+        async function loadShop() {
+            const lang = document.getElementById('langSwitcher').value;
             const container = document.getElementById('productsContainer');
-            container.innerHTML = '';
+            
+            const { data, error } = await _client.from('products').select('*');
+            if (error) return;
 
+            container.innerHTML = '';
             data.forEach(p => {
+                const rates = { ar: 3.75, tr: 32.2, en: 1, zh: 7.23 };
+                const symbols = { ar: 'ر.س', tr: 'TL', en: '$', zh: '¥' };
+                const price = (p.price_usd * rates[lang]).toFixed(2);
+
                 container.innerHTML += `
-                    <div class="bg-slate-800 p-6 rounded-3xl border border-slate-700">
-                        <div class="h-40 bg-slate-700 rounded-2xl mb-4 flex items-center justify-center text-4xl">
-                            ${p.image_url ? `<img src="${p.image_url}" class="w-full h-full object-cover rounded-2xl">` : '📦'}
+                    <div class="bg-slate-900/80 p-6 rounded-[2.5rem] border border-white/5 transition hover:border-blue-500">
+                        <div class="h-48 bg-slate-800 rounded-3xl mb-6 overflow-hidden flex items-center justify-center text-4xl">
+                            ${p.image_url ? `<img src="${p.image_url}" class="w-full h-full object-cover">` : '📦'}
                         </div>
-                        <h3 class="text-xl font-bold">${p['name_' + lang] || p.name_en}</h3>
-                        <p class="text-blue-400 font-bold mt-2 font-mono">${p.price_usd} USD</p>
+                        <h3 class="text-xl font-bold mb-2">${p['name_' + lang] || p.name_en}</h3>
+                        <div class="flex justify-between items-end mt-4">
+                            <span class="text-2xl font-black text-blue-400">${price} <span class="text-xs uppercase">${symbols[lang]}</span></span>
+                            <button class="bg-white text-black p-3 rounded-xl font-bold text-xs">ORDER</button>
+                        </div>
                     </div>
                 `;
             });
         }
 
-        document.getElementById('langSwitcher').addEventListener('change', loadProducts);
-        window.onload = loadProducts;
+        document.getElementById('langSwitcher').addEventListener('change', loadShop);
+        window.onload = loadShop;
     </script>
 </body>
 </html>
