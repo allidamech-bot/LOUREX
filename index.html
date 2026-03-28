@@ -1,107 +1,71 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LOUREX GLOBAL | منصة التجارة الدولية</title>
+    <title>LOUREX GLOBAL</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;900&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Cairo', sans-serif; background-color: #020617; }
-        .glass-card { 
-            background: rgba(30, 41, 59, 0.5); 
-            backdrop-filter: blur(12px); 
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        .glass-card:hover { transform: scale(1.02); border-color: #3b82f6; }
-        .gradient-text { background: linear-gradient(90deg, #60a5fa, #34d399); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Cairo', sans-serif; background-color: #020617; }</style>
 </head>
-<body class="text-slate-200">
-
-    <nav class="sticky top-0 z-50 bg-[#020617]/80 backdrop-blur-md border-b border-slate-800 p-4">
-        <div class="max-w-6xl mx-auto flex justify-between items-center">
-            <div class="text-2xl font-black tracking-tighter text-blue-500 italic">LOUREX</div>
-            <select id="langSwitcher" class="bg-slate-900 border border-slate-700 text-sm rounded-xl px-3 py-2 outline-none focus:ring-2 ring-blue-500">
-                <option value="ar">العربية 🇸🇦</option>
-                <option value="tr">Türkçe 🇹🇷</option>
-                <option value="en">English 🇺🇸</option>
-                <option value="zh">中文 🇨🇳</option>
-            </select>
-        </div>
+<body class="text-white">
+    <nav class="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-900/50">
+        <div class="text-2xl font-bold text-blue-500">LOUREX</div>
+        <select id="langSwitcher" class="bg-slate-800 p-2 rounded text-sm text-white">
+            <option value="ar">العربية 🇸🇦</option>
+            <option value="tr">Türkçe 🇹🇷</option>
+            <option value="en">English 🇺🇸</option>
+            <option value="zh">中文 🇨🇳</option>
+        </select>
     </nav>
 
-    <header class="py-16 px-6 text-center">
-        <h1 id="heroTitle" class="text-4xl md:text-6xl font-black mb-4 gradient-text">بوابتك العالمية للتجارة</h1>
-        <p id="heroSub" class="text-slate-400 text-sm md:text-base max-w-lg mx-auto">من إسطنبول وقوانزو إلى الرياض.. نظام ذكي لإدارة تجارتك بـ 4 لغات.</p>
+    <header class="py-10 text-center">
+        <h1 id="heroTitle" class="text-3xl font-bold">بوابتك العالمية للتجارة</h1>
     </header>
 
-    <main class="max-w-6xl mx-auto px-6 pb-24">
-        <div id="productsContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div class="col-span-full text-center py-20 opacity-50">جاري مزامنة البيانات العالمية...</div>
-        </div>
+    <main class="max-w-4xl mx-auto px-4">
+        <div id="productsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            </div>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
+        // استبدل هذه بالقيم الحقيقية من Supabase
         const SUPABASE_URL = 'ضع_هنا_URL'; 
         const SUPABASE_KEY = 'ضع_هنا_KEY';
-        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        
+        // تأكد من وجود الرمز _ قبل supabase لتجنب تضارب الأسماء
+        const _client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        const content = {
-            ar: { title: "بوابتك العالمية للتجارة", sub: "من إسطنبول وقوانزو إلى الرياض.. نظام ذكي لإدارة تجارتك بـ 4 لغات.", moq: "أدنى كمية:", origin: "المنشأ:" },
-            tr: { title: "Küresel Ticaret Kapınız", sub: "İstanbul ve Guangzhou'dan Riyad'a.. Ticaretinizi 4 dilde yöneten akıllı sistem.", moq: "Minimum Sipariş:", origin: "Menşei:" },
-            en: { title: "Global Trade Gateway", sub: "From Istanbul & Guangzhou to Riyadh.. Smart system to manage your trade in 4 languages.", moq: "MOQ:", origin: "Origin:" },
-            zh: { title: "全球贸易门户", sub: "从伊斯坦布尔和广州到利雅得.. 以4种语言管理您的贸易的智能系统。", moq: "起订量:", origin: "产地:" }
-        };
-
-        async function loadSystem() {
+        async function loadProducts() {
             const lang = document.getElementById('langSwitcher').value;
-            
-            // تحديث النصوص الثابتة
-            document.getElementById('heroTitle').innerText = content[lang].title;
-            document.getElementById('heroSub').innerText = content[lang].sub;
-            document.documentElement.lang = lang;
             document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
 
-            const { data: products, error } = await _supabase.from('products').select('*');
-            if (error) return console.error(error);
+            const { data, error } = await _client.from('products').select('*');
+            
+            if (error) {
+                console.error("خطأ:", error.message);
+                return;
+            }
 
             const container = document.getElementById('productsContainer');
             container.innerHTML = '';
 
-            products.forEach(p => {
-                const rates = { ar: 3.75, tr: 32.2, en: 1, zh: 7.23 };
-                const symbols = { ar: 'ر.س', tr: 'TL', en: '$', zh: '¥' };
-                const price = (p.price_usd * rates[lang]).toFixed(2);
-                
-                // اختيار الاسم الصحيح بناءً على اللغة، وإذا كان فارغاً نستخدم الإنجليزي كافتراضي
-                const displayName = p['name_' + lang] || p.name_en || 'Product';
-
+            data.forEach(p => {
                 container.innerHTML += `
-                    <div class="glass-card rounded-[2.5rem] p-6 flex flex-col h-full">
-                        <div class="w-full h-48 bg-slate-800 rounded-3xl mb-6 overflow-hidden">
-                            ${p.image_url ? `<img src="${p.image_url}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center text-5xl">📦</div>`}
+                    <div class="bg-slate-800 p-6 rounded-3xl border border-slate-700">
+                        <div class="h-40 bg-slate-700 rounded-2xl mb-4 flex items-center justify-center text-4xl">
+                            ${p.image_url ? `<img src="${p.image_url}" class="w-full h-full object-cover rounded-2xl">` : '📦'}
                         </div>
-                        <h3 class="text-xl font-bold mb-2">${displayName}</h3>
-                        <p class="text-slate-500 text-xs mb-4">${content[lang].origin} ${p.origin_country || 'Turkey'}</p>
-                        <div class="mt-auto flex justify-between items-end">
-                            <div>
-                                <p class="text-[10px] text-slate-500 uppercase font-bold">${content[lang].moq}</p>
-                                <p class="text-lg font-black text-blue-400">${price} <span class="text-xs">${symbols[lang]}</span></p>
-                            </div>
-                            <button class="bg-blue-600 hover:bg-blue-500 p-3 rounded-2xl transition-colors">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
-                            </button>
-                        </div>
+                        <h3 class="text-xl font-bold">${p['name_' + lang] || p.name_en}</h3>
+                        <p class="text-blue-400 font-bold mt-2 font-mono">${p.price_usd} USD</p>
                     </div>
                 `;
             });
         }
 
-        document.getElementById('langSwitcher').addEventListener('change', loadSystem);
-        window.onload = loadSystem;
+        document.getElementById('langSwitcher').addEventListener('change', loadProducts);
+        window.onload = loadProducts;
     </script>
 </body>
 </html>
